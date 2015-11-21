@@ -441,7 +441,6 @@ typedef struct elf64_phdr {
 #define Elf_Off		Elf32_Off
 #define Elf_Section	Elf32_Section
 #define Elf_Versym	Elf32_Versym
-#define elfhdr		elf32hdr
 #define elfhdr_t	elf32hdr_t
 #define elf_shdr	elf32_shdr
 #define elf_shdr_t	elf32_shdr_t

@@ -46,7 +46,7 @@ FIRMWARE_M4	=  firmware/arch/$(ARCH)/firmware.m4 \
 
 MBR_OBJS	=  boot/arch/$(ARCH)/$(MACH)/bootmain.o
 
-all: firmware.bin mbr.bin
+all: firmware.bin mbr.bin kernel.elf
 
 $(FIRMWARE_OBJS): EXTRA_CFLAGS = -O2
 
@@ -62,6 +62,9 @@ $(MBR_OBJS): EXTRA_CFLAGS := -Os
 
 mbr.elf: $(MBR_OBJS) boot/arch/$(ARCH)/$(MACH)/mbr.ld
 	$(LD) $(LDFLAGS) -T boot/arch/$(ARCH)/$(MACH)/mbr.ld -o $@ $^
+
+kernel.elf: kernel/kernel.o kernel/kernel.ld
+	$(LD) $(LDFLAGS) -T kernel/kernel.ld -o $@ $^
 
 clean:
 	rm -f firmware.ld
