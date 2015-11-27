@@ -68,6 +68,11 @@ mbr.elf: $(MBR_OBJS) boot/arch/$(ARCH)/$(MACH)/mbr.ld
 kernel.elf: $(KERNEL_OBJS) kern/kernel.ld
 	$(LD) $(LDFLAGS) -T kern/kernel.ld -o $@ $^
 
+copy:
+	sudo dd if=mbr.bin of=/dev/mmcblk0 bs=446
+	sudo dd if=kernel.elf of=/dev/mmcblk0p2
+	umount /dev/mmcblk0p1
+
 clean:
 	rm -f firmware.ld
 	rm -rf $(FIRMWARE_OBJS) firmware.elf firmware.bin firmware.s
@@ -86,4 +91,4 @@ clean:
 %.bin: %.elf
 	$(OBJCOPY) -O binary -S $^ $@
 
-.PHONY: clean
+.PHONY: clean copy
