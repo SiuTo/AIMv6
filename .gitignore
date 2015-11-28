@@ -2,3 +2,4 @@
 *.elf
 *.o
 firmware.ld
+*.swp
