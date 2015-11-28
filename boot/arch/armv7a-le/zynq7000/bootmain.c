@@ -34,8 +34,7 @@ void mbr_bootmain(void)
 	sd_dma_spin_read(mem_base_addr+0x200, byteToSector(elf_header->e_phentsize*elf_header->e_phnum), sd_base_addr);
 	elf_phdr_t *elf_pheader = (void *)(mem_base_addr+0x200+elf_header->e_phoff);
 
-	int i;
-	for (i=0; i<elf_header->e_phnum; ++i)
+	for (int i=0; i<elf_header->e_phnum; ++i)
 		if (elf_pheader[i].p_type==PT_LOAD)
 			sd_dma_spin_read(elf_pheader[i].p_vaddr-(elf_pheader[i].p_offset&511), byteToSector(elf_pheader[i].p_memsz), sd_base_addr+(elf_pheader[i].p_offset>>9));
 	

@@ -26,6 +26,7 @@ OBJCOPY		=  $(CROSS_COMPILE)objcopy
 
 INCFLAG		=  -I. -I./include -I./include/arch/$(ARCH)
 INCFLAG		+= -I./include/arch/$(ARCH)/asm/mach-$(MACH)
+INCFLAG		+= -I./kern/include
 
 CFLAGS		=  -Wall -fno-builtin -nostdinc -nostdlib -march=armv7-a
 CFLAGS		+= -mlittle-endian $(INCFLAG) -DMACH_$(UPPERMACH)
@@ -46,7 +47,10 @@ FIRMWARE_M4	=  firmware/arch/$(ARCH)/firmware.m4 \
 
 MBR_OBJS	=  boot/arch/$(ARCH)/$(MACH)/bootmain.o
 
-KERNEL_OBJS	= kern/kernel.o
+KERNEL_OBJS	= kern/kernel.o \
+		   drivers/serial/uart.o \
+		   drivers/serial/uart-zynq7000.o \
+		   kern/mm/mmu.o
 
 all: firmware.bin mbr.bin kernel.elf
 
