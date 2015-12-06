@@ -11,7 +11,7 @@ void mmu_enable(void)
 		u32 *entry_addr = (u32 *)(KPGDIR_BASE + (i<<2));
 		*entry_addr = (i<<20) | 0x5E2;
 	}
-	for (u32 i=0; i<210; ++i)
+	for (u32 i=0; i<512; ++i)
 	{
 		u32 *entry_addr = (u32 *)(KPGDIR_BASE + (((KERN_BASE>>20) + i)<<2));
 		*entry_addr = (i<<20) | 0x5E2;
