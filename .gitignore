@@ -3,3 +3,5 @@
 *.o
 firmware.ld
 *.swp
+tags
+ssd.mbr

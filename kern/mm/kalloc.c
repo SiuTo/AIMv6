@@ -1,35 +1,45 @@
 #include <kernel.h>
+#include <config.h>
 #include <drivers/serial/uart.h>
 
-struct run
+typedef struct run
 {
 	int size;
 	struct run *next;
-} *free_list;
+} run_t;
 
-void init_freelist(void *addr, int num)
+run_t *free_list;
+
+void init_freelist()
 {
-	free_list = (struct run *)addr;
-	free_list->size = num;
-	free_list->next = 0;
+	run_t *head = (run_t *)p2v(PHY_BEGIN);
+	run_t *mid = (run_t *)p2v(PHY_BEGIN+(PAGE_SIZE<<1));
+	run_t *tail = (run_t *)p2v(PHY_END-PAGE_SIZE);
+
+	head->size = 0;
+	mid->size = ((PHY_END-PHY_BEGIN)>>PAGE_SIZE_SHIFT)-4;
+	tail->size = 0;
+
+	head->next = mid;
+	mid->next = tail;
+	tail->next = NULL;
+
+	free_list = head;
 }
 
 char* alloc_pages(int num)
 {
-	struct run *last;
-	for (struct run *p=free_list; p; p=p->next)
+	run_t *last;
+	for (run_t *p=free_list; p; p=p->next)
 	{
 		if (p->size>num)
 		{
 			p->size -= num;
-			return (char *)p;
+			return (char *)p+(p->size<<PAGE_SIZE_SHIFT);
 		}
 		else if (p->size==num)
 		{
-			if (p==free_list) free_list = p->next; else
-			{
-				last->next = p->next;
-			}
+			last->next = p->next;
 			return (char *)p;
 		}
 		last = p;
@@ -39,23 +49,41 @@ char* alloc_pages(int num)
 	while (1);
 }
 
-// TODO: merge
+void merge_pages(run_t *p)
+{
+	run_t *q = p->next;
+	if ((char *)p+(p->size<<PAGE_SIZE_SHIFT)==(char *)q)
+	{
+		p->size += q->size;
+		p->next = q->next;
+	}
+}
+
 void free_pages(char *addr, int num)
 {
-	struct run *r = (struct run *)addr;
-	r->size = num;
+	run_t *p = free_list;
+	while ((char *)p->next < addr) p = p->next;
 	
-	if ((char *)free_list<addr)
+	run_t *new = (run_t *)addr;
+	new->size = num;
+	new->next = p->next;
+	p->next = new;
+
+	merge_pages(p);
+	merge_pages(p);
+}
+
+void print_freelist()
+{
+	for (run_t *p=free_list; p; p=p->next)
 	{
-		r->next = free_list;
-		free_list = r;
-		return;
+		puthex((u32)p);
+		uart_spin_puts(" ");
+		puthex((u32)p->size);
+		uart_spin_puts(" ");
+		puthex((u32)p->next);
+		uart_spin_puts("\r\n");
 	}
-
-	struct run *p = free_list;
-	while (p->next && (char *)p->next > addr) p = p->next;
-	r->next = p->next;
-	p->next = r;
-
+	uart_spin_puts("\r\n");
 }
 
