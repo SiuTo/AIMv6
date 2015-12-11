@@ -51,7 +51,8 @@ KERNEL_OBJS	= kern/kernel.o \
 		   drivers/serial/uart.o \
 		   drivers/serial/uart-zynq7000.o \
 		   kern/mm/mmu.o \
-		   kern/mm/kalloc.o
+		   kern/mm/kalloc.o \
+		   kern/mm/slab.o
 
 all: firmware.bin mbr.bin kernel.elf
 
