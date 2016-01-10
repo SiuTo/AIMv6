@@ -1,4 +1,4 @@
-#include <kernel.h>
+#include <kern/kernel.h>
 #include <config.h>
 #include <drivers/serial/uart.h>
 

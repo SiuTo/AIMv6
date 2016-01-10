@@ -1,5 +1,5 @@
 #include <drivers/serial/uart.h>
-#include <kernel.h>
+#include <kern/kernel.h>
 
 void mmu_enable()
 {

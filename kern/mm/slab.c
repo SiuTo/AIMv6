@@ -1,7 +1,7 @@
-#include <slab.h>
+#include <kern/mm/slab.h>
 #include <config.h>
-#include <kalloc.h>
-#include <kernel.h>
+#include <kern/mm/kalloc.h>
+#include <kern/kernel.h>
 #include <drivers/serial/uart.h>
 
 void swap(u32 *a, u32 *b)

@@ -8,7 +8,7 @@
 #define AIMV6_PCB_H
 
 #include <config.h>
-#include <kern/mm/pte.h>
+//#include <kern/mm/pte.h>
 
 //  task descriptor
 typedef struct

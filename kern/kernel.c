@@ -1,8 +1,8 @@
 #include <drivers/serial/uart.h>
-#include <kernel.h>
-#include <kalloc.h>
-#include <mmu.h>
-#include <slab.h>
+#include <kern/kernel.h>
+#include <kern/mm/kalloc.h>
+#include <kern/mm/mmu.h>
+#include <kern/mm/slab.h>
 
 int main(void)
 {
