@@ -4,6 +4,7 @@
 
 #include <kern/sched/policy_rr.h>
 #include <kern/mm/slab.h>
+#include <drivers/serial/uart.h>
 
 typedef struct queue_element
 {
@@ -31,6 +32,16 @@ void sched_init()
 	init_slab_cache(&queue_pool, sizeof(queue_element_t), 20, 2, 4);
 }
 
+void print_queue(queue_t queue)
+{
+	for (queue_element_t *p = queue.head; p!=NULL; p = p->next)
+	{
+		puthex((u32)p->pcb);
+		uart_spin_puts("\r\n");
+	}
+	uart_spin_puts("\r\n");
+}
+
 void queue_push(queue_t *queue, pcb_t *task)
 {
 	queue_element_t *element = (queue_element_t *)alloc_obj(&queue_pool);
@@ -52,7 +63,7 @@ void queue_pop(queue_t *queue, pcb_t *task)
 			if (queue->head->pcb == task) queue->head = p->next;
 			if (queue->tail->pcb == task) queue->tail = last;
 			if (last != NULL) last->next = p->next;
-			free_obj(&queue_pool, task);
+			free_obj(&queue_pool, p);
 			break;
 		}
 		last = p;
