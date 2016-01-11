@@ -35,8 +35,19 @@ void mbr_bootmain(void)
 	elf_phdr_t *elf_pheader = (void *)(mem_base_addr+0x200+elf_header->e_phoff);
 
 	for (int i=0; i<elf_header->e_phnum; ++i)
+	{
 		if (elf_pheader[i].p_type==PT_LOAD)
+		{
+			puthex(elf_pheader[i].p_vaddr);
+			uart_spin_puts("\r\n");
+			puthex(elf_pheader[i].p_memsz);
+			uart_spin_puts("\r\n");
+			puthex(elf_pheader[i].p_offset);
+			uart_spin_puts("\r\n");
 			sd_dma_spin_read(elf_pheader[i].p_vaddr-(elf_pheader[i].p_offset&511), byteToSector(elf_pheader[i].p_memsz), sd_base_addr+(elf_pheader[i].p_offset>>9));
+			uart_spin_puts("finish read...\r\n");
+		}
+	}
 	
 	int (*kernel_main)(void) = (void *)elf_header->e_entry;
 	kernel_main();

@@ -28,7 +28,7 @@ void sched_init()
 	queue_done.head = queue_done.tail = NULL;
 	queue_abort.head = queue_abort.tail = NULL;
 
-	init_slab_cache(&queue_pool, 8, 20, 3, 4);
+	init_slab_cache(&queue_pool, sizeof(queue_element_t), 20, 2, 4);
 }
 
 void queue_push(queue_t *queue, pcb_t *task)
