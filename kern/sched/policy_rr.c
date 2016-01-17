@@ -22,6 +22,7 @@ slab_cache_t queue_pool;
 
 void sched_init()
 {
+	uart_spin_puts("Enable rr scheduler\r\n");
 	queue_new.head = queue_new.tail = NULL;
 	queue_ready.head = queue_ready.tail = NULL;
 	queue_running.head = queue_running.tail = NULL;
